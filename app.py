@@ -6,7 +6,7 @@ st.set_page_config(
     layout="wide"
 )
 
-st.image("my_img.png", caption="Khalil Mohamed Manger Director", width=150)
+st.image("my_img.png", caption="Khalil Mohamed Manger Director", use_container_width=True)
 st.title("📈 Rabhan Growth Agency")
 st.subheader("AI Media Plan Generator")
 
