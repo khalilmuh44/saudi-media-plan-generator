@@ -6,7 +6,12 @@ st.set_page_config(
     layout="wide"
 )
 
-st.image("my_img.png", caption="Khalil Mohamed Manger Director", use_container_width=True)
+# تقسيم السطر إلى 3 أعمدة (جانبي فارغ، أوسط للصورة، جانبي فارغ)
+col1, col2, col3 = st.columns([1, 1.5, 1])
+
+with col2:
+    
+    st.image("my_img.png", use_container_width=True)
 st.title("📈 Rabhan Growth Agency")
 st.subheader("AI Media Plan Generator")
 
