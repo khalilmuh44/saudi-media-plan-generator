@@ -607,7 +607,7 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
 
     logo_html = f'<img src="{logo_url}" class="logo" alt="Store Logo">' if logo_url else ""
 
-    # بناء قالب الـ HTML مع دمج الألوان والتقييم والاسم الجديد
+    # بناء قالب الـ HTML المحسّن بالكامل بصرياً برمجياً
     html_template = f"""
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
@@ -650,20 +650,27 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     .cover p { margin-top: 12px; font-size: 17px; opacity: 0.95; }
     .content { padding: 45px; }
     .score-box {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-        padding: 30px;
-        border-radius: 22px;
+        background: #fdfaf4;
+        color: var(--dark);
+        padding: 25px;
+        border-radius: 16px;
         text-align: center;
-        margin-bottom: 35px;
+        margin: 10px auto 35px auto;
+        max-width: 440px;
+        border: 2px solid var(--primary);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
     }
     .score-number {
-        font-size: 52px;
+        font-size: 56px;
         font-weight: bold;
+        color: var(--primary);
+        line-height: 1.1;
     }
     .score-label {
-        font-size: 18px;
-        margin-top: 10px;
+        font-size: 16px;
+        color: var(--text);
+        margin-top: 8px;
+        font-weight: bold;
     }
     h1 { color: var(--dark); font-size: 32px; padding-bottom: 18px; border-bottom: 4px solid var(--primary); }
     h2 { color: var(--primary); margin-top: 38px; font-size: 25px; border-right: 6px solid var(--primary); padding-right: 12px; }
@@ -685,11 +692,11 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
             <h1>الخطة التسويقية لمتجر {store_name}</h1>
             <p>تقرير مخصص مبني على تحليل بيانات المتجر، الهوية البصرية، والسوق السعودي.</p>
         </div>
-        <div class="score-box">
-            <div class="score-number">{final_score}/10</div>
-            <div class="score-label">التقييم العام للمتجر</div>
-        </div>
         <div class="content">
+            <div class="score-box">
+                <div class="score-number">{final_score}/10</div>
+                <div class="score-label">التقييم العام للمتجر</div>
+            </div>
             {report_html_body}
             <div class="footer">
                 تم إعداد هذا التقرير بواسطة شركة أمين للحلول التسويقية والنمو الرقمي
