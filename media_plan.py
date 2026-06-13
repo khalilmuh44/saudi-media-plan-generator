@@ -1,3 +1,4 @@
+from ast import Add
 import os
 import re
 import requests
@@ -151,6 +152,30 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     - فرص تحسين الظهور في Google
     - إجراءات سريعة التنفيذ
     - خطة نمو خلال 90 يوم
+    
+   
+    Add a section called:
+    - تقييم المتجر من 10
+
+    Give the store an overall score out of 10.
+
+    Also give separate scores out of 10 for:
+    - تجربة العميل داخل المتجر
+    - وضوح العروض
+    - الثقة والمصداقية
+    - صفحات المنتجات
+    - فرص تحسين معدل التحويل
+    - فرص الظهور في Google
+    - جاهزية المتجر للإعلانات
+
+    For each score, explain briefly:
+    - Why this score was given
+    - What can improve it
+
+    Use a positive advisory tone.
+    Do not make the client feel criticized.
+
+
 
     Output in Markdown. Use tables whenever possible.
     """
@@ -171,6 +196,17 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     | القناة | مناسبة؟ | السبب |
     |---|---|---|
     | Instagram | نعم | مناسب لاكتشاف منتجات العطور |
+           
+    ## تقييم المتجر من 10
+    | العنصر | التقييم | الملاحظة |
+    |---|---:|---|
+    | تجربة العميل داخل المتجر | 7/10 | التجربة جيدة، لكن يمكن تحسين وضوح التنقل |
+    | الثقة والمصداقية | 8/10 | وجود خبرة طويلة يعزز الثقة |
+    | صفحات المنتجات | 6/10 | تحتاج إبراز التقييمات والعروض بشكل أوضح |
+    | جاهزية المتجر للإعلانات | 7/10 | مناسب للإعلانات مع بعض التحسينات قبل التوسع |
+
+    **التقييم العام للمتجر: 7/10**
+
     """
 
     user_prompt = f"""
@@ -254,6 +290,24 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     .cover h1 { margin: 0; font-size: 34px; line-height: 1.5; }
     .cover p { margin-top: 12px; font-size: 17px; opacity: 0.95; }
     .content { padding: 45px; }
+    .score-box{
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 30px;
+    border-radius: 22px;
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.score-number{
+    font-size: 52px;
+    font-weight: bold;
+}
+
+.score-label{
+    font-size: 18px;
+    margin-top: 10px;
+}
     h1 { color: var(--dark); font-size: 32px; padding-bottom: 18px; border-bottom: 4px solid var(--primary); }
     h2 { color: var(--primary); margin-top: 38px; font-size: 25px; border-right: 6px solid var(--primary); padding-right: 12px; }
     h3 { color: var(--secondary); margin-top: 28px; }
@@ -274,9 +328,17 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
             <h1>الخطة التسويقية لمتجر {store_name}</h1>
             <p>تقرير مخصص مبني على تحليل بيانات المتجر، الهوية البصرية، والسوق السعودي.</p>
         </div>
+            <div class="score-box">
+        <div class="score-number">7/10</div>
+        <div class="score-label">التقييم العام للمتجر</div>
+        </div>
         <div class="content">
             {report_html_body}
-            <div class="footer">تم إعداد هذا التقرير بواسطة شركة ربحان</div>
+            <!-- <div class="footer">تم إعداد هذا التقرير بواسطة شركة ربحان</div> -->
+            <div class="footer">
+    تم إعداد هذا التقرير بواسطة شركة أمين للحلول التسويقية والنمو الرقمي
+            </div>
+
         </div>
     </div>
     </body>

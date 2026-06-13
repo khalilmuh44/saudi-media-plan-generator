@@ -12,7 +12,7 @@ col1, col2, col3 = st.columns([1, 1.5, 1])
 with col2:
     
     st.image("my_img.png", use_container_width=True)
-st.title("📈 Rabhan Growth Agency")
+st.title("📈 Ameen Growth Agency")
 st.subheader("AI Media Plan Generator")
 
 store_name = st.text_input("Store Name")
