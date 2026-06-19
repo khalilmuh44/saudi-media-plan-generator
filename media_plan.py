@@ -261,7 +261,7 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
     :root {{
@@ -269,36 +269,35 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
         --secondary: #FE5500;
         --accent: #FEC000;
         --dark: #3B4757;
-        --text: #1F2937;
-        --muted: #6B7280;
-        --bg: #F8FAFC;
-        --border: #E5E7EB;
         --white: #FFFFFF;
+        --soft-white: #F8FAFC;
+        --border: rgba(255,255,255,0.18);
     }}
 
     body {{
         font-family: 'IBM Plex Sans Arabic', Tahoma, Arial, sans-serif;
         direction: rtl;
-        background: linear-gradient(135deg, var(--bg), #ffffff);
-        color: var(--text);
-        padding: 40px;
+        background: var(--dark);
+        color: var(--white);
         margin: 0;
+        padding: 40px;
     }}
 
     .report {{
-        background: var(--white);
         max-width: 1100px;
         margin: auto;
+        background: var(--dark);
+        color: var(--white);
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 18px 45px rgba(0,0,0,0.10);
+        box-shadow: 0 22px 55px rgba(0,0,0,0.25);
     }}
 
     .cover {{
-        padding: 54px 50px;
+        padding: 54px 50px 36px 50px;
         background:
-            radial-gradient(circle at top left, rgba(254,192,0,0.22), transparent 28%),
-            linear-gradient(135deg, var(--primary), var(--dark));
+            radial-gradient(circle at top left, rgba(254,192,0,0.16), transparent 30%),
+            linear-gradient(135deg, #3B4757, #2F3946);
         color: var(--white);
         border-bottom: 6px solid var(--secondary);
     }}
@@ -310,12 +309,11 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
         padding: 12px;
         border-radius: 14px;
         margin-bottom: 26px;
-        border: 1px solid rgba(255,255,255,0.45);
     }}
 
     .cover h1 {{
         margin: 0;
-        font-size: 36px;
+        font-size: 38px;
         line-height: 1.55;
         color: var(--white);
         border: none;
@@ -325,74 +323,76 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     .cover p {{
         margin-top: 14px;
         font-size: 17px;
-        color: rgba(255,255,255,0.92);
+        color: rgba(255,255,255,0.9);
     }}
 
     .content {{
         padding: 45px;
+        background: var(--dark);
     }}
 
     .score-box {{
-        background: var(--white);
-        color: var(--dark);
-        padding: 26px;
-        border-radius: 18px;
+        background: var(--secondary);
+        color: #000000;
+        padding: 28px;
+        border-radius: 0;
         text-align: center;
-        margin: 10px auto 38px auto;
+        margin: 0 auto 42px auto;
         max-width: 440px;
-        border: 2px solid var(--secondary);
-        box-shadow: 0 8px 24px rgba(15,117,202,0.10);
+        border: none;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.18);
     }}
 
     .score-number {{
         font-size: 58px;
-        font-weight: 700;
-        color: var(--primary);
+        font-weight: 600;
+        color: #000000;
         line-height: 1.1;
     }}
 
     .score-label {{
-        font-size: 16px;
-        color: var(--dark);
+        font-size: 22px;
+        color: #000000;
         margin-top: 8px;
-        font-weight: 600;
+        font-weight: 700;
     }}
 
     h1 {{
-        color: var(--dark);
-        font-size: 32px;
+        color: var(--white);
+        font-size: 34px;
         padding-bottom: 18px;
-        border-bottom: 4px solid var(--secondary);
+        border-bottom: 4px solid var(--accent);
     }}
 
     h2 {{
-        color: var(--dark);
-        margin-top: 40px;
-        font-size: 25px;
-        border-right: 6px solid var(--secondary);
-        padding-right: 12px;
+        color: var(--accent);
+        margin-top: 42px;
+        font-size: 30px;
+        border-right: 7px solid var(--secondary);
+        padding-right: 14px;
     }}
 
     h3 {{
-        color: var(--dark);
-        margin-top: 28px;
+        color: var(--white);
+        margin-top: 30px;
+        font-size: 23px;
     }}
 
     p, li {{
-        font-size: 16px;
-        line-height: 1.95;
-        color: var(--text);
+        font-size: 18px;
+        line-height: 2;
+        color: var(--white);
     }}
 
     ul {{
-        padding-right: 25px;
+        padding-right: 28px;
     }}
 
     table {{
         width: 100%;
         border-collapse: collapse;
-        margin: 24px 0;
-        font-size: 15px;
+        margin: 28px 0;
+        font-size: 16px;
         overflow: hidden;
         border-radius: 12px;
     }}
@@ -400,38 +400,39 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     th {{
         background: var(--primary);
         color: var(--white);
-        padding: 13px;
+        padding: 14px;
         border: 1px solid var(--primary);
+        font-weight: 700;
     }}
 
     td {{
-        padding: 13px;
+        padding: 14px;
         border: 1px solid var(--border);
-        background: var(--white);
-        color: var(--text);
+        background: rgba(255,255,255,0.06);
+        color: var(--white);
     }}
 
     tr:nth-child(even) td {{
-        background: #FAFAFA;
+        background: rgba(255,255,255,0.10);
     }}
 
     strong {{
-        color: var(--dark);
+        color: var(--white);
         font-weight: 700;
     }}
 
     .footer {{
-        margin-top: 50px;
-        padding-top: 22px;
+        margin-top: 55px;
+        padding-top: 24px;
         border-top: 1px solid var(--border);
         text-align: center;
-        color: var(--muted);
-        font-size: 13px;
+        color: rgba(255,255,255,0.72);
+        font-size: 14px;
     }}
 
     @media print {{
         body {{
-            background: white;
+            background: var(--dark);
             padding: 0;
         }}
 
@@ -441,7 +442,7 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
             max-width: 100%;
         }}
 
-        .cover {{
+        .cover, .content, .score-box, th, td {{
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }}
