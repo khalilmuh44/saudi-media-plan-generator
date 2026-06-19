@@ -259,20 +259,25 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     <meta charset="UTF-8">
     <title>الخطة التسويقية - {store_name}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
     :root {{
-        --primary: {primary_color};
-        --secondary: {secondary_color};
-        --dark: #111827;
-        --text: #1f2937;
-        --muted: #6b7280;
-        --bg: #f5f7fb;
-        --border: #e5e7eb;
-        --soft-bg: #f9fafb;
+        --primary: #0F75CA;
+        --secondary: #FE5500;
+        --accent: #FEC000;
+        --dark: #3B4757;
+        --text: #1F2937;
+        --muted: #6B7280;
+        --bg: #F8FAFC;
+        --border: #E5E7EB;
+        --white: #FFFFFF;
     }}
 
     body {{
-        font-family: Tahoma, Arial, sans-serif;
+        font-family: 'IBM Plex Sans Arabic', Tahoma, Arial, sans-serif;
         direction: rtl;
         background: linear-gradient(135deg, var(--bg), #ffffff);
         color: var(--text);
@@ -281,44 +286,46 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     }}
 
     .report {{
-        background: white;
+        background: var(--white);
         max-width: 1100px;
         margin: auto;
-        border-radius: 22px;
+        border-radius: 24px;
         overflow: hidden;
         box-shadow: 0 18px 45px rgba(0,0,0,0.10);
     }}
 
     .cover {{
-        padding: 50px;
-        background: #ffffff;
-        border-top: 10px solid var(--primary);
-        border-bottom: 1px solid var(--border);
-        color: var(--dark);
+        padding: 54px 50px;
+        background:
+            radial-gradient(circle at top left, rgba(254,192,0,0.22), transparent 28%),
+            linear-gradient(135deg, var(--primary), var(--dark));
+        color: var(--white);
+        border-bottom: 6px solid var(--secondary);
     }}
 
     .logo {{
-        max-height: 80px;
-        max-width: 180px;
-        background: white;
-        padding: 10px;
-        border-radius: 12px;
-        margin-bottom: 25px;
-        border: 1px solid var(--border);
+        max-height: 82px;
+        max-width: 190px;
+        background: var(--white);
+        padding: 12px;
+        border-radius: 14px;
+        margin-bottom: 26px;
+        border: 1px solid rgba(255,255,255,0.45);
     }}
 
     .cover h1 {{
         margin: 0;
-        font-size: 34px;
-        line-height: 1.5;
-        color: var(--dark);
+        font-size: 36px;
+        line-height: 1.55;
+        color: var(--white);
+        border: none;
+        padding: 0;
     }}
 
     .cover p {{
-        margin-top: 12px;
+        margin-top: 14px;
         font-size: 17px;
-        color: var(--muted);
-        opacity: 1;
+        color: rgba(255,255,255,0.92);
     }}
 
     .content {{
@@ -326,43 +333,43 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     }}
 
     .score-box {{
-        background: #ffffff;
+        background: var(--white);
         color: var(--dark);
-        padding: 25px;
-        border-radius: 16px;
+        padding: 26px;
+        border-radius: 18px;
         text-align: center;
-        margin: 10px auto 35px auto;
+        margin: 10px auto 38px auto;
         max-width: 440px;
-        border: 2px solid var(--primary);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        border: 2px solid var(--secondary);
+        box-shadow: 0 8px 24px rgba(15,117,202,0.10);
     }}
 
     .score-number {{
-        font-size: 56px;
-        font-weight: bold;
-        color: var(--dark);
+        font-size: 58px;
+        font-weight: 700;
+        color: var(--primary);
         line-height: 1.1;
     }}
 
     .score-label {{
         font-size: 16px;
-        color: var(--text);
+        color: var(--dark);
         margin-top: 8px;
-        font-weight: bold;
+        font-weight: 600;
     }}
 
     h1 {{
         color: var(--dark);
         font-size: 32px;
         padding-bottom: 18px;
-        border-bottom: 4px solid var(--primary);
+        border-bottom: 4px solid var(--secondary);
     }}
 
     h2 {{
         color: var(--dark);
-        margin-top: 38px;
+        margin-top: 40px;
         font-size: 25px;
-        border-right: 6px solid var(--primary);
+        border-right: 6px solid var(--secondary);
         padding-right: 12px;
     }}
 
@@ -391,26 +398,26 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     }}
 
     th {{
-        background: var(--dark);
-        color: #ffffff;
+        background: var(--primary);
+        color: var(--white);
         padding: 13px;
-        border: 1px solid var(--dark);
+        border: 1px solid var(--primary);
     }}
 
     td {{
         padding: 13px;
         border: 1px solid var(--border);
-        background: #ffffff;
+        background: var(--white);
         color: var(--text);
     }}
 
     tr:nth-child(even) td {{
-        background: #fafafa;
+        background: #FAFAFA;
     }}
 
     strong {{
         color: var(--dark);
-        font-weight: bold;
+        font-weight: 700;
     }}
 
     .footer {{
@@ -433,6 +440,11 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
             border-radius: 0;
             max-width: 100%;
         }}
+
+        .cover {{
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }}
     }}
     </style>
     </head>
@@ -454,7 +466,7 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
             {report_html_body}
 
             <div class="footer">
-                تم إعداد هذا التقرير بواسطة شركة امين للحلول التسويقية والنمو الرقمي
+                تم إعداد هذا التقرير بواسطة شركة أمين للحلول التسويقية والنمو الرقمي
             </div>
         </div>
     </div>
