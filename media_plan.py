@@ -274,23 +274,28 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
         --border: rgba(255,255,255,0.18);
     }}
 
+    html {{
+        background: var(--dark);
+    }}
+
     body {{
         font-family: 'IBM Plex Sans Arabic', Tahoma, Arial, sans-serif;
         direction: rtl;
         background: var(--dark);
         color: var(--white);
         margin: 0;
-        padding: 40px;
+        padding: 0;
     }}
 
     .report {{
+        width: 100%;
         max-width: 1100px;
-        margin: auto;
+        margin: 0 auto;
         background: var(--dark);
         color: var(--white);
-        border-radius: 24px;
+        border-radius: 0;
         overflow: hidden;
-        box-shadow: 0 22px 55px rgba(0,0,0,0.25);
+        box-shadow: none;
     }}
 
     .cover {{
@@ -430,21 +435,38 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
         font-size: 14px;
     }}
 
+    @page {{
+        size: A4;
+        margin: 0;
+    }}
+
     @media print {{
-        body {{
-            background: var(--dark);
-            padding: 0;
+        html, body {{
+            width: 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: var(--dark) !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }}
 
         .report {{
-            box-shadow: none;
-            border-radius: 0;
-            max-width: 100%;
+            width: 100% !important;
+            max-width: none !important;
+            min-height: 100vh !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            background: var(--dark) !important;
         }}
 
-        .cover, .content, .score-box, th, td {{
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+        .cover,
+        .content,
+        .score-box,
+        th,
+        td {{
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }}
     }}
     </style>
