@@ -301,15 +301,200 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
 
     logo_html = f'<img src="{logo_url}" class="logo" alt="Store Logo">' if logo_url else ""
 
-    # بناء قالب الـ HTML المحسّن بالكامل بصرياً برمجياً
+#     # بناء قالب الـ HTML المحسّن بالكامل بصرياً برمجياً
+#     html_template = f"""
+#     <!DOCTYPE html>
+#     <html lang="ar" dir="rtl">
+#     <head>
+#     <meta charset="UTF-8">
+#     <title>الخطة التسويقية - {store_name}</title>
+
+
+#     <style>
+#     :root {{
+#         --primary: {primary_color};
+#         --secondary: {secondary_color};
+#         --dark: #111827;
+#         --text: #1f2937;
+#         --muted: #6b7280;
+#         --bg: #f5f7fb;
+#         --border: #e5e7eb;
+#     }}
+#     body {{
+#         font-family: Tahoma, Arial, sans-serif;
+#         direction: rtl;
+#         background: linear-gradient(135deg, var(--bg), #ffffff);
+#         color: var(--text);
+#         padding: 40px;
+#         margin: 0;
+#     }}
+#     .report {{
+#         background: white;
+#         max-width: 1100px;
+#         margin: auto;
+#         border-radius: 22px;
+#         overflow: hidden;
+#         box-shadow: 0 18px 45px rgba(0,0,0,0.10);
+#     }}
+#     .cover {{
+#     padding: 50px;
+#     background: linear-gradient(135deg, var(--primary), var(--secondary));
+#     color: {cover_text_color};
+#     }}
+#     .logo {
+#     max-height: 80px;
+#     max-width: 180px;
+#     background: white;
+#     padding: 10px;
+#     border-radius: 12px;
+#     margin-bottom: 25px;
+# }
+
+# .cover h1 {
+#     color: {cover_text_color};
+#     margin: 0;
+#     font-size: 34px;
+#     line-height: 1.5;
+#        }
+
+# .cover p {
+#     color: {cover_text_color};
+#     margin-top: 12px;
+#     font-size: 17px;
+#     opacity: 0.95;
+#      }
+
+# .content {
+#     padding: 45px;
+#          }
+#     .score-box {
+#         background: #fdfaf4;
+#         color: var(--dark);
+#         padding: 25px;
+#         border-radius: 16px;
+#         text-align: center;
+#         margin: 10px auto 35px auto;
+#         max-width: 440px;
+#         border: 2px solid var(--primary);
+#         box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+#        }
+#     .score-number {
+#         font-size: 56px;
+#         font-weight: bold;
+#         color: var(--dark);
+#         line-height: 1.1;
+#                  }
+#     .score-label {
+#         font-size: 16px;
+#         color: var(--text);
+#         margin-top: 8px;
+#         font-weight: bold;
+#     }
+#     h1 {
+#     color: var(--dark);
+#     font-size: 32px;
+#     padding-bottom: 18px;
+#     border-bottom: 4px solid var(--primary);
+# }
+
+# h2 {
+#     color: var(--dark);
+#     margin-top: 38px;
+#     font-size: 25px;
+#     border-right: 6px solid var(--primary);
+#     padding-right: 12px;
+# }
+
+# h3 {
+#     color: var(--dark);
+#     margin-top: 28px;
+# }
+
+# p, li {
+#     font-size: 16px;
+#     line-height: 1.95;
+#     color: var(--text);
+# }
+
+# ul {
+#     padding-right: 25px;
+# }
+
+# table {
+#     width: 100%;
+#     border-collapse: collapse;
+#     margin: 24px 0;
+#     font-size: 15px;
+#     overflow: hidden;
+#     border-radius: 12px;
+# }
+
+# th {
+#     background: var(--primary);
+#     color: {table_text_color};
+#     padding: 13px;
+#     border: 1px solid var(--primary);
+# }
+
+# td {
+#     padding: 13px;
+#     border: 1px solid var(--border);
+#     background: #ffffff;
+#     color: var(--text);
+# }
+
+# tr:nth-child(even) td {
+#     background: #fafafa;
+# }
+
+# strong {
+#     color: var(--dark);
+#     font-weight: 700;
+# }
+
+# .footer {
+#     margin-top: 50px;
+#     padding-top: 22px;
+#     border-top: 1px solid var(--border);
+#     text-align: center;
+#     color: var(--muted);
+#     font-size: 13px;
+# }
+#     </style>
+
+
+
+
+#     </head>
+#     <body>
+#     <div class="report">
+#         <div class="cover">
+#             """ + f"""{logo_html}
+#             <h1>الخطة التسويقية لمتجر {store_name}</h1>
+#             <p>تقرير مخصص مبني على تحليل بيانات المتجر، الهوية البصرية، والسوق السعودي.</p>
+#         </div>
+#         <div class="content">
+#             <div class="score-box">
+#                 <div class="score-number">{final_score}/10</div>
+#                 <div class="score-label">التقييم العام للمتجر</div>
+#             </div>
+#             {report_html_body}
+#             <div class="footer">
+#                 تم إعداد هذا التقرير بواسطة شركة أمين للحلول التسويقية والنمو الرقمي
+#             </div>
+#         </div>
+#     </div>
+#     </body>
+#     </html>
+#     """
+  
+# هذا هو الجزء المكتمل من القالب مع الـ footer
     html_template = f"""
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
     <meta charset="UTF-8">
     <title>الخطة التسويقية - {store_name}</title>
-
-
     <style>
     :root {{
         --primary: {primary_color};
@@ -320,156 +505,23 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
         --bg: #f5f7fb;
         --border: #e5e7eb;
     }}
-    body {{
-        font-family: Tahoma, Arial, sans-serif;
-        direction: rtl;
-        background: linear-gradient(135deg, var(--bg), #ffffff);
-        color: var(--text);
-        padding: 40px;
-        margin: 0;
-    }}
-    .report {{
-        background: white;
-        max-width: 1100px;
-        margin: auto;
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 18px 45px rgba(0,0,0,0.10);
-    }}
-    .cover {{
-    padding: 50px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: {cover_text_color};
-    }}
-    .logo {
-    max-height: 80px;
-    max-width: 180px;
-    background: white;
-    padding: 10px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-}
-
-.cover h1 {
-    color: {cover_text_color};
-    margin: 0;
-    font-size: 34px;
-    line-height: 1.5;
-       }
-
-.cover p {
-    color: {cover_text_color};
-    margin-top: 12px;
-    font-size: 17px;
-    opacity: 0.95;
-     }
-
-.content {
-    padding: 45px;
-         }
-    .score-box {
-        background: #fdfaf4;
-        color: var(--dark);
-        padding: 25px;
-        border-radius: 16px;
-        text-align: center;
-        margin: 10px auto 35px auto;
-        max-width: 440px;
-        border: 2px solid var(--primary);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-       }
-    .score-number {
-        font-size: 56px;
-        font-weight: bold;
-        color: var(--dark);
-        line-height: 1.1;
-                 }
-    .score-label {
-        font-size: 16px;
-        color: var(--text);
-        margin-top: 8px;
-        font-weight: bold;
-    }
-    h1 {
-    color: var(--dark);
-    font-size: 32px;
-    padding-bottom: 18px;
-    border-bottom: 4px solid var(--primary);
-}
-
-h2 {
-    color: var(--dark);
-    margin-top: 38px;
-    font-size: 25px;
-    border-right: 6px solid var(--primary);
-    padding-right: 12px;
-}
-
-h3 {
-    color: var(--dark);
-    margin-top: 28px;
-}
-
-p, li {
-    font-size: 16px;
-    line-height: 1.95;
-    color: var(--text);
-}
-
-ul {
-    padding-right: 25px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 24px 0;
-    font-size: 15px;
-    overflow: hidden;
-    border-radius: 12px;
-}
-
-th {
-    background: var(--primary);
-    color: {table_text_color};
-    padding: 13px;
-    border: 1px solid var(--primary);
-}
-
-td {
-    padding: 13px;
-    border: 1px solid var(--border);
-    background: #ffffff;
-    color: var(--text);
-}
-
-tr:nth-child(even) td {
-    background: #fafafa;
-}
-
-strong {
-    color: var(--dark);
-    font-weight: 700;
-}
-
-.footer {
-    margin-top: 50px;
-    padding-top: 22px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-}
+    body {{ font-family: Tahoma, Arial, sans-serif; direction: rtl; background: linear-gradient(135deg, var(--bg), #ffffff); color: var(--text); padding: 40px; margin: 0; }}
+    .report {{ background: white; max-width: 1100px; margin: auto; border-radius: 22px; overflow: hidden; box-shadow: 0 18px 45px rgba(0,0,0,0.1); }}
+    .cover {{ padding: 50px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: {cover_text_color}; }}
+    .logo {{ max-height: 80px; max-width: 180px; background: white; padding: 10px; border-radius: 12px; margin-bottom: 25px; }}
+    .cover h1, .cover p {{ color: {cover_text_color} !important; }}
+    .content {{ padding: 45px; }}
+    .score-box {{ background: #fdfaf4; color: var(--dark); padding: 25px; border-radius: 16px; text-align: center; margin: 10px auto 35px auto; max-width: 440px; border: 2px solid var(--primary); }}
+    .score-number {{ font-size: 56px; font-weight: bold; color: var(--primary); }}
+    h1 {{ color: var(--dark); border-bottom: 4px solid var(--primary); padding-bottom: 18px; }}
+    h2 {{ color: var(--primary); margin-top: 38px; border-right: 6px solid var(--primary); padding-right: 12px; }}
+    .footer {{ margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 13px; }}
     </style>
-
-
-
-
     </head>
     <body>
     <div class="report">
         <div class="cover">
-            """ + f"""{logo_html}
+            {logo_html}
             <h1>الخطة التسويقية لمتجر {store_name}</h1>
             <p>تقرير مخصص مبني على تحليل بيانات المتجر، الهوية البصرية، والسوق السعودي.</p>
         </div>
@@ -487,6 +539,8 @@ strong {
     </body>
     </html>
     """
+
+
 
     # حفظ الملف محلياً
     with open("media_plan.html", "w", encoding="utf-8") as file:
