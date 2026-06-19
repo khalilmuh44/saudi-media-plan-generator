@@ -489,6 +489,7 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
 #     """
   
 # هذا هو الجزء المكتمل من القالب مع الـ footer
+    # هذا هو قالب الـ HTML الصحيح والمحتوي على تعريفات الجداول
     html_template = f"""
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
@@ -501,21 +502,19 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
         --secondary: {secondary_color};
         --dark: #111827;
         --text: #1f2937;
-        --muted: #6b7280;
-        --bg: #f5f7fb;
         --border: #e5e7eb;
     }}
-    body {{ font-family: Tahoma, Arial, sans-serif; direction: rtl; background: linear-gradient(135deg, var(--bg), #ffffff); color: var(--text); padding: 40px; margin: 0; }}
-    .report {{ background: white; max-width: 1100px; margin: auto; border-radius: 22px; overflow: hidden; box-shadow: 0 18px 45px rgba(0,0,0,0.1); }}
-    .cover {{ padding: 50px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: {cover_text_color}; }}
-    .logo {{ max-height: 80px; max-width: 180px; background: white; padding: 10px; border-radius: 12px; margin-bottom: 25px; }}
-    .cover h1, .cover p {{ color: {cover_text_color} !important; }}
+    /* تنسيق الجداول الأساسي */
+    table {{ width: 100%; border-collapse: collapse; margin: 24px 0; }}
+    th {{ background-color: var(--primary); color: {table_text_color}; padding: 12px; border: 1px solid var(--border); }}
+    td {{ padding: 12px; border: 1px solid var(--border); color: var(--text); }}
+    tr:nth-child(even) {{ background-color: #f9fafb; }}
+    
+    /* باقي التنسيقات */
+    .report {{ background: white; max-width: 1100px; margin: auto; border-radius: 22px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }}
+    .cover {{ padding: 50px; background: var(--primary); color: {cover_text_color}; }}
     .content {{ padding: 45px; }}
-    .score-box {{ background: #fdfaf4; color: var(--dark); padding: 25px; border-radius: 16px; text-align: center; margin: 10px auto 35px auto; max-width: 440px; border: 2px solid var(--primary); }}
-    .score-number {{ font-size: 56px; font-weight: bold; color: var(--primary); }}
-    h1 {{ color: var(--dark); border-bottom: 4px solid var(--primary); padding-bottom: 18px; }}
-    h2 {{ color: var(--primary); margin-top: 38px; border-right: 6px solid var(--primary); padding-right: 12px; }}
-    .footer {{ margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 13px; }}
+    .footer {{ margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--border); text-align: center; color: #6b7280; font-size: 13px; }}
     </style>
     </head>
     <body>
@@ -523,13 +522,8 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
         <div class="cover">
             {logo_html}
             <h1>الخطة التسويقية لمتجر {store_name}</h1>
-            <p>تقرير مخصص مبني على تحليل بيانات المتجر، الهوية البصرية، والسوق السعودي.</p>
         </div>
         <div class="content">
-            <div class="score-box">
-                <div class="score-number">{final_score}/10</div>
-                <div class="score-label">التقييم العام للمتجر</div>
-            </div>
             {report_html_body}
             <div class="footer">
                 تم إعداد هذا التقرير بواسطة شركة أمين للحلول التسويقية والنمو الرقمي
