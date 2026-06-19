@@ -276,39 +276,39 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
+    <meta charset="UTF-8">
     <style>
-        :root {{ --primary: {primary_color}; --secondary: {secondary_color}; }}
-        body {{ font-family: Tahoma, Arial, sans-serif; direction: rtl; background: #f5f7fb; padding: 40px; color: #1f2937; }}
-        .report {{ background: white; max-width: 1100px; margin: auto; border-radius: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }}
-        .cover {{ padding: 50px; background: {primary_color}; color: {cover_text_color}; text-align: center; }}
-        .logo {{ max-height: 80px; background: white; padding: 10px; border-radius: 12px; margin-bottom: 20px; }}
-        .content {{ padding: 45px; }}
-        .score-box {{ background: #fdfaf4; padding: 25px; border-radius: 16px; text-align: center; margin: -80px auto 30px; max-width: 300px; border: 2px solid {primary_color}; }}
-        .score-number {{ font-size: 40px; font-weight: bold; color: {primary_color}; }}
-        table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
-        th {{ background: {primary_color}; color: {table_text_color}; padding: 12px; border: 1px solid #ddd; }}
-        td {{ padding: 12px; border: 1px solid #ddd; }}
-        .footer {{ text-align: center; padding-top: 30px; color: #888; font-size: 12px; }}
+        .report-container {{ font-family: sans-serif; max-width: 900px; margin: auto; background: white; }}
+        .header {{ background: {primary}; color: {text_color}; padding: 40px; text-align: center; }}
+        .score-card {{ background: #fff; padding: 20px; border: 2px solid {primary}; border-radius: 15px; margin: -50px auto 20px; width: 200px; text-align: center; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
+        th {{ background: {primary}; color: {text_color}; padding: 10px; }}
+        td {{ border: 1px solid #ddd; padding: 10px; }}
+        .logo {{ max-width: 150px; background: white; padding: 10px; border-radius: 10px; }}
     </style>
     </head>
     <body>
-    <div class="report">
-        <div class="cover">
-            {logo_html}
-            <h1>الخطة التسويقية لمتجر {store_name}</h1>
-        </div>
-        <div class="content">
-            <div class="score-box">
-                <div class="score-number">{final_score}/10</div>
-                <div>التقييم العام للمتجر</div>
+        <div class="report-container">
+            <div class="header">
+                {logo_img}
+                <h1>الخطة التسويقية لـ {store_name}</h1>
             </div>
-            {report_html_body}
-            <div class="footer">تم إعداد هذا التقرير بواسطة شركة أمين للحلول التسويقية والنمو الرقمي</div>
+            <div class="score-card">
+                <h2>{final_score}/10</h2>
+                <p>التقييم العام</p>
+            </div>
+            <div style="padding: 40px;">
+                {report_html_body}
+            </div>
+            <div style="text-align: center; padding: 20px; color: #888;">
+                تم الإعداد بواسطة شركة أمين
+            </div>
         </div>
-    </div>
     </body>
     </html>
     """
+
     with open("media_plan.html", "w", encoding="utf-8") as file:
         file.write(html_template)
+    
     return html_template, report_markdown
