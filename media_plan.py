@@ -461,3 +461,10 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     </body>
     </html>
     """
+
+    with open("media_plan.html", "w", encoding="utf-8") as file:
+        file.write(html_template)
+
+    print("HTML Report Created Successfully: media_plan.html")
+
+    return html_template, report_markdown
