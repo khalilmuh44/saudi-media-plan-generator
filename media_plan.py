@@ -18,6 +18,35 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def is_valid_hex(color):
     return bool(re.match(r"^#[0-9A-Fa-f]{6}$", color))
 
+
+def hex_to_rgb(hex_color):
+    hex_color = hex_color.replace("#", "").strip()
+
+    if len(hex_color) != 6:
+        return (37, 99, 235)
+
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+
+def get_brightness(hex_color):
+    r, g, b = hex_to_rgb(hex_color)
+    return (r * 299 + g * 587 + b * 114) / 1000
+
+
+def get_text_color(bg_color):
+    return "#111827" if get_brightness(bg_color) > 170 else "#ffffff"
+
+
+def protect_brand_color(color, fallback="#2563eb"):
+    if not color or not is_valid_hex(color):
+        return fallback
+
+    if get_brightness(color) > 185:
+        return fallback
+
+    return color
+
+
 def extract_brand_assets(soup, base_url):
     theme_color = None
 
@@ -40,10 +69,18 @@ def extract_brand_assets(soup, base_url):
         if c.lower() not in ignored_colors
     ]
 
-    primary_color = theme_color or (filtered_colors[0] if filtered_colors else "#4f46e5")
-    secondary_color = filtered_colors[1] if len(filtered_colors) > 1 else "#111827"
+    raw_primary_color = store_data["brand_assets"]["primary_color"]
+    raw_secondary_color = store_data["brand_assets"]["secondary_color"]
 
-    logo_url = None
+    primary_color = protect_brand_color(raw_primary_color, "#2563eb")
+    secondary_color = protect_brand_color(raw_secondary_color, "#111827")
+
+    cover_text_color = get_text_color(primary_color)
+    table_text_color = get_text_color(primary_color)
+
+    logo_url = store_data["brand_assets"]["logo_url"]
+
+
     og_image = soup.find("meta", property="og:image")
     if og_image and og_image.get("content"):
         logo_url = og_image.get("content")
@@ -103,12 +140,6 @@ def fetch_store_page(url):
         "page_text": page_text[:12000],
         "brand_assets": brand_assets
     }
-# --- دالة اختيار لون النص الذكي ---
-def get_text_color(hex_color):
-    hex_color = hex_color.lstrip('#')
-    r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-    luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-    return "#111827" if luminance > 0.5 else "#ffffff"
 
 def generate_media_plan(store_name, store_url, niche, budget, country):
     
@@ -117,8 +148,7 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     primary_color = store_data["brand_assets"]["primary_color"]
     secondary_color = store_data["brand_assets"]["secondary_color"]
     logo_url = store_data["brand_assets"]["logo_url"]
-    text_on_primary = get_text_color(primary_color)
-    text_on_secondary = get_text_color(secondary_color)
+
     system_prompt = """
     You are a senior Saudi e-commerce media buyer and growth consultant.
     You are writing for Saudi store owners, not marketers.
@@ -263,43 +293,118 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
+    <meta charset="UTF-8">
+    <title>الخطة التسويقية - {store_name}</title>
     <style>
-        :root {{
-            --primary: {primary};
-            --text-on-primary: {text_on_primary};
-        }}
-        body {{ font-family: Tahoma, sans-serif; background: #f5f7fb; padding: 40px; }}
-        .report {{ background: white; max-width: 1000px; margin: auto; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }}
-        .cover {{ padding: 50px; background: var(--primary); color: var(--text-on-primary); text-align: center; }}
-        .logo {{ max-height: 80px; background: white; padding: 10px; border-radius: 10px; margin-bottom: 20px; }}
-        .score-box {{ background: #fff; padding: 20px; border-radius: 15px; text-align: center; margin: -50px auto 20px; width: 250px; border: 2px solid var(--primary); }}
-        .content {{ padding: 40px; }}
-        table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
-        th {{ background: var(--primary); color: var(--text-on-primary); padding: 12px; }}
-        td {{ padding: 12px; border: 1px solid #ddd; }}
-        .footer {{ text-align: center; padding: 20px; color: #888; font-size: 12px; }}
+    :root {{
+        --primary: {primary_color};
+        --secondary: {secondary_color};
+        --dark: #111827;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --bg: #f5f7fb;
+        --border: #e5e7eb;
+    }}
+    body {{
+        font-family: Tahoma, Arial, sans-serif;
+        direction: rtl;
+        background: linear-gradient(135deg, var(--bg), #ffffff);
+        color: var(--text);
+        padding: 40px;
+        margin: 0;
+    }}
+    .report {{
+        background: white;
+        max-width: 1100px;
+        margin: auto;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 18px 45px rgba(0,0,0,0.10);
+    }}
+
+    .cover {
+    padding: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: {cover_text_color};
+           }
+
+    .logo { max-height: 80px; max-width: 180px; background: white; padding: 10px; border-radius: 12px; margin-bottom: 25px; }
+    .cover h1 {
+    color: {cover_text_color};
+    margin: 0;
+    font-size: 34px;
+    line-height: 1.5;
+         }
+
+    .cover p {
+        color: {cover_text_color};
+        margin-top: 12px;
+        font-size: 17px;
+        opacity: 0.95;
+       }
+    .content { padding: 45px; }
+    .score-box {
+        background: #fdfaf4;
+        color: var(--dark);
+        padding: 25px;
+        border-radius: 16px;
+        text-align: center;
+        margin: 10px auto 35px auto;
+        max-width: 440px;
+        border: 2px solid var(--primary);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    }
+    .score-number {
+        font-size: 56px;
+        font-weight: bold;
+        color: var(--primary);
+        line-height: 1.1;
+    }
+    .score-label {
+        font-size: 16px;
+        color: var(--text);
+        margin-top: 8px;
+        font-weight: bold;
+    }
+    h1 { color: var(--dark); font-size: 32px; padding-bottom: 18px; border-bottom: 4px solid var(--primary); }
+    h2 { color: var(--primary); margin-top: 38px; font-size: 25px; border-right: 6px solid var(--primary); padding-right: 12px; }
+    h3 { color: var(--secondary); margin-top: 28px; }
+    p, li { font-size: 16px; line-height: 1.95; }
+    ul { padding-right: 25px; }
+    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; overflow: hidden; border-radius: 12px; }
+    th { background: var(--primary); color: white; padding: 13px; border: 1px solid var(--primary); }
+    td { padding: 13px; border: 1px solid var(--border); background: #ffffff; }
+    tr:nth-child(even) td { background: #fafafa; }
+    strong { color: var(--secondary); }
+    .footer { margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 13px; }
     </style>
     </head>
     <body>
-        <div class="report">
-            <div class="cover">
-                {logo_html}
-                <h1>الخطة التسويقية لمتجر {store_name}</h1>
+    <div class="report">
+        <div class="cover">
+            """ + f"""{logo_html}
+            <h1>الخطة التسويقية لمتجر {store_name}</h1>
+            <p>تقرير مخصص مبني على تحليل بيانات المتجر، الهوية البصرية، والسوق السعودي.</p>
+        </div>
+        <div class="content">
+            <div class="score-box">
+                <div class="score-number">{final_score}/10</div>
+                <div class="score-label">التقييم العام للمتجر</div>
             </div>
-            <div class="content">
-                <div class="score-box">
-                    <div style="font-size: 40px; font-weight: bold; color: var(--primary);">{final_score}/10</div>
-                    <div>التقييم العام للمتجر</div>
-                </div>
-                {report_html_body}
-                <div class="footer">تم إعداد هذا التقرير بواسطة شركة أمين للحلول التسويقية والنمو الرقمي</div>
+            {report_html_body}
+            <div class="footer">
+                تم إعداد هذا التقرير بواسطة شركة امين للحلول التسويقية والنمو الرقمي
             </div>
         </div>
+    </div>
     </body>
     </html>
     """
 
+    # حفظ الملف محلياً
     with open("media_plan.html", "w", encoding="utf-8") as file:
         file.write(html_template)
+
+    print("HTML Report Created Successfully: media_plan.html")
     
     return html_template, report_markdown
