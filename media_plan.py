@@ -1,154 +1,14 @@
-
-
-import os
-import re
-import requests
-from bs4 import BeautifulSoup
-from openai import OpenAI
-import markdown
-
-from dotenv import load_dotenv  
-
-
-load_dotenv()  
-
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-def is_valid_hex(color):
-    return bool(re.match(r"^#[0-9A-Fa-f]{6}$", color))
-
-
-def hex_to_rgb(hex_color):
-    hex_color = hex_color.replace("#", "").strip()
-
-    if len(hex_color) != 6:
-        return (37, 99, 235)
-
-    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-
-
-def get_brightness(hex_color):
-    r, g, b = hex_to_rgb(hex_color)
-    return (r * 299 + g * 587 + b * 114) / 1000
-
-
-def get_text_color(bg_color):
-    return "#111827" if get_brightness(bg_color) > 170 else "#ffffff"
-
-
-def protect_brand_color(color, fallback="#2563eb"):
-    if not color or not is_valid_hex(color):
-        return fallback
-
-    if get_brightness(color) > 185:
-        return fallback
-
-    return color
-
-
-def extract_brand_assets(soup, base_url):
-    theme_color = None
-
-    meta_theme = soup.find("meta", attrs={"name": "theme-color"})
-    if meta_theme and meta_theme.get("content"):
-        color = meta_theme.get("content").strip()
-        if is_valid_hex(color):
-            theme_color = color
-
-    html_text = str(soup)
-    hex_colors = re.findall(r"#[0-9A-Fa-f]{6}", html_text)
-
-    ignored_colors = {
-        "#ffffff", "#000000", "#f5f5f5", "#eeeeee", "#e5e5e5",
-        "#cccccc", "#dddddd", "#f9f9f9", "#111111", "#222222"
-    }
-
-    filtered_colors = [
-        c for c in hex_colors
-        if c.lower() not in ignored_colors
-    ]
-
-    raw_primary_color = store_data["brand_assets"]["primary_color"]
-    raw_secondary_color = store_data["brand_assets"]["secondary_color"]
-
-    primary_color = protect_brand_color(raw_primary_color, "#2563eb")
-    secondary_color = protect_brand_color(raw_secondary_color, "#111827")
-
-    cover_text_color = get_text_color(primary_color)
-    table_text_color = get_text_color(primary_color)
-
-    logo_url = store_data["brand_assets"]["logo_url"]
-
-
-    og_image = soup.find("meta", property="og:image")
-    if og_image and og_image.get("content"):
-        logo_url = og_image.get("content")
-
-    if not logo_url:
-        logo_img = soup.find("img", attrs={"alt": re.compile("logo|شعار", re.I)})
-        if logo_img and logo_img.get("src"):
-            logo_url = logo_img.get("src")
-
-    if logo_url and logo_url.startswith("/"):
-        logo_url = base_url.rstrip("/") + logo_url
-
-    return {
-        "primary_color": primary_color,
-        "secondary_color": secondary_color,
-        "logo_url": logo_url
-    }
-
-def fetch_store_page(url):
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-    
-    response = requests.get(url, headers=headers, timeout=20)
-    response.raise_for_status()
-
-    soup = BeautifulSoup(response.text, "html.parser")
-    brand_assets = extract_brand_assets(soup, url)
-
-    for tag in soup(["script", "style", "noscript"]):
-        tag.decompose()
-
-    title = soup.title.get_text(strip=True) if soup.title else ""
-
-    meta_description = ""
-    meta = soup.find("meta", attrs={"name": "description"})
-    if meta:
-        meta_description = meta.get("content", "")
-
-    headings = [
-        h.get_text(" ", strip=True)
-        for h in soup.find_all(["h1", "h2", "h3"])
-        if h.get_text(strip=True)
-    ]
-
-    links_ctas = [
-        a.get_text(" ", strip=True)
-        for a in soup.find_all(["a", "button"])
-        if a.get_text(strip=True)
-    ]
-
-    page_text = soup.get_text(" ", strip=True)
-
-    return {
-        "title": title,
-        "meta_description": meta_description,
-        "headings": headings[:50],
-        "links_ctas": links_ctas[:80],
-        "page_text": page_text[:12000],
-        "brand_assets": brand_assets
-    }
-
 def generate_media_plan(store_name, store_url, niche, budget, country):
-    
     store_data = fetch_store_page(store_url)
-
-    primary_color = store_data["brand_assets"]["primary_color"]
-    secondary_color = store_data["brand_assets"]["secondary_color"]
-    logo_url = store_data["brand_assets"]["logo_url"]
-
+    
+    # حماية الألوان من البياض والرمادي الفاتح
+    primary = protect_brand_color(store_data["brand_assets"]["primary_color"], "#2563eb")
+    secondary = protect_brand_color(store_data["brand_assets"]["secondary_color"], "#111827")
+    
+    # اختيار لون نص مناسب للخلفية
+    cover_text = get_text_color(primary)
+    
+    # توليد المحتوى
     system_prompt = """
     You are a senior Saudi e-commerce media buyer and growth consultant.
     You are writing for Saudi store owners, not marketers.
@@ -268,143 +128,66 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     Create a complete customized audit and media plan based on this website data.
     """
 
-    # إرسال الطلب إلى OpenAI
+
+
+
+
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": example_user},
-            {"role": "assistant", "content": example_assistant},
             {"role": "user", "content": user_prompt},
         ],
         temperature=0.3,
     )
-
     report_markdown = response.choices[0].message.content
     report_html_body = markdown.markdown(report_markdown, extensions=["tables"])
+    
+    final_score = re.search(r"التقييم النهائي للمتجر هو:\s*(\d+)", report_markdown)
+    final_score = final_score.group(1) if final_score else "7"
+    
+    logo_url = store_data["brand_assets"]["logo_url"]
+    logo_html = f'<img src="{logo_url}" class="logo">' if logo_url else ""
 
-    match = re.search(r"التقييم النهائي للمتجر هو:\s*(\d+)", report_markdown)
-    final_score = match.group(1) if match else "7"  # قيمة افتراضية في حال لم يجد الرقم
-
-    logo_html = f'<img src="{logo_url}" class="logo" alt="Store Logo">' if logo_url else ""
-
-    # بناء قالب الـ HTML المحسّن بالكامل بصرياً برمجياً
+    # القالب المصلح (استخدام {{ }} للـ CSS)
     html_template = f"""
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
     <meta charset="UTF-8">
-    <title>الخطة التسويقية - {store_name}</title>
     <style>
-    :root {{
-        --primary: {primary_color};
-        --secondary: {secondary_color};
-        --dark: #111827;
-        --text: #1f2937;
-        --muted: #6b7280;
-        --bg: #f5f7fb;
-        --border: #e5e7eb;
-    }}
-    body {{
-        font-family: Tahoma, Arial, sans-serif;
-        direction: rtl;
-        background: linear-gradient(135deg, var(--bg), #ffffff);
-        color: var(--text);
-        padding: 40px;
-        margin: 0;
-    }}
-    .report {{
-        background: white;
-        max-width: 1100px;
-        margin: auto;
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 18px 45px rgba(0,0,0,0.10);
-    }}
-
-    .cover {
-    padding: 50px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: {cover_text_color};
-           }
-
-    .logo { max-height: 80px; max-width: 180px; background: white; padding: 10px; border-radius: 12px; margin-bottom: 25px; }
-    .cover h1 {
-    color: {cover_text_color};
-    margin: 0;
-    font-size: 34px;
-    line-height: 1.5;
-         }
-
-    .cover p {
-        color: {cover_text_color};
-        margin-top: 12px;
-        font-size: 17px;
-        opacity: 0.95;
-       }
-    .content { padding: 45px; }
-    .score-box {
-        background: #fdfaf4;
-        color: var(--dark);
-        padding: 25px;
-        border-radius: 16px;
-        text-align: center;
-        margin: 10px auto 35px auto;
-        max-width: 440px;
-        border: 2px solid var(--primary);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-    }
-    .score-number {
-        font-size: 56px;
-        font-weight: bold;
-        color: var(--primary);
-        line-height: 1.1;
-    }
-    .score-label {
-        font-size: 16px;
-        color: var(--text);
-        margin-top: 8px;
-        font-weight: bold;
-    }
-    h1 { color: var(--dark); font-size: 32px; padding-bottom: 18px; border-bottom: 4px solid var(--primary); }
-    h2 { color: var(--primary); margin-top: 38px; font-size: 25px; border-right: 6px solid var(--primary); padding-right: 12px; }
-    h3 { color: var(--secondary); margin-top: 28px; }
-    p, li { font-size: 16px; line-height: 1.95; }
-    ul { padding-right: 25px; }
-    table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; overflow: hidden; border-radius: 12px; }
-    th { background: var(--primary); color: white; padding: 13px; border: 1px solid var(--primary); }
-    td { padding: 13px; border: 1px solid var(--border); background: #ffffff; }
-    tr:nth-child(even) td { background: #fafafa; }
-    strong { color: var(--secondary); }
-    .footer { margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 13px; }
+        .report {{ max-width: 900px; margin: auto; background: white; font-family: sans-serif; border: 1px solid #ddd; }}
+        .header {{ background: {primary}; color: {cover_text}; padding: 40px; text-align: center; }}
+        .logo {{ max-width: 150px; background: white; padding: 10px; border-radius: 10px; }}
+        .score-card {{ background: #fff; padding: 20px; border: 2px solid {primary}; border-radius: 15px; margin: -50px auto 20px; width: 200px; text-align: center; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
+        th {{ background: {primary}; color: {cover_text}; padding: 10px; }}
+        td {{ border: 1px solid #ddd; padding: 10px; }}
+        .footer {{ text-align: center; padding: 20px; color: #888; font-size: 12px; }}
     </style>
     </head>
     <body>
-    <div class="report">
-        <div class="cover">
-            """ + f"""{logo_html}
-            <h1>الخطة التسويقية لمتجر {store_name}</h1>
-            <p>تقرير مخصص مبني على تحليل بيانات المتجر، الهوية البصرية، والسوق السعودي.</p>
-        </div>
-        <div class="content">
-            <div class="score-box">
-                <div class="score-number">{final_score}/10</div>
-                <div class="score-label">التقييم العام للمتجر</div>
+        <div class="report">
+            <div class="header">
+                {logo_html}
+                <h1>الخطة التسويقية لـ {store_name}</h1>
             </div>
-            {report_html_body}
+            <div class="score-card">
+                <h2>{final_score}/10</h2>
+                <p>التقييم العام للمتجر</p>
+            </div>
+            <div style="padding: 40px;">
+                {report_html_body}
+            </div>
             <div class="footer">
-                تم إعداد هذا التقرير بواسطة شركة امين للحلول التسويقية والنمو الرقمي
+                تم الإعداد بواسطة شركة أمين للحلول التسويقية والنمو الرقمي
             </div>
         </div>
-    </div>
     </body>
     </html>
     """
 
-    # حفظ الملف محلياً
     with open("media_plan.html", "w", encoding="utf-8") as file:
         file.write(html_template)
-
-    print("HTML Report Created Successfully: media_plan.html")
     
     return html_template, report_markdown
