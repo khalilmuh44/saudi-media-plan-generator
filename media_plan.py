@@ -279,10 +279,9 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     <meta charset="UTF-8">
     <style>
         .report-container {{ font-family: sans-serif; max-width: 900px; margin: auto; background: white; }}
-        .header {{ background: {primary}; color: {text_color}; padding: 40px; text-align: center; }}
-        .score-card {{ background: #fff; padding: 20px; border: 2px solid {primary}; border-radius: 15px; margin: -50px auto 20px; width: 200px; text-align: center; }}
-        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
-        th {{ background: {primary}; color: {text_color}; padding: 10px; }}
+        .header {{ background: {primary_color}; color: {cover_text_color}; padding: 40px; text-align: center; }}
+        .score-card {{ background: #fff; padding: 20px; border: 2px solid {primary_color}; border-radius: 15px; margin: -50px auto 20px; width: 200px; text-align: center; }}
+         th {{ background: {primary_color}; color: {table_text_color}; padding: 10px; }}
         td {{ border: 1px solid #ddd; padding: 10px; }}
         .logo {{ max-width: 150px; background: white; padding: 10px; border-radius: 10px; }}
     </style>
@@ -290,7 +289,7 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     <body>
         <div class="report-container">
             <div class="header">
-                {logo_img}
+                {logo_html}
                 <h1>الخطة التسويقية لـ {store_name}</h1>
             </div>
             <div class="score-card">
