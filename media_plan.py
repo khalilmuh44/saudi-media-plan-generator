@@ -150,44 +150,40 @@ def generate_media_plan(store_name, store_url, niche, budget, country):
     logo_html = f'<img src="{logo_url}" class="logo">' if logo_url else ""
 
     # القالب المصلح (استخدام {{ }} للـ CSS)
+   # القالب الصحيح: مضاعفة الأقواس للـ CSS
     html_template = f"""
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
     <head>
-    <meta charset="UTF-8">
     <style>
-        .report {{ max-width: 900px; margin: auto; background: white; font-family: sans-serif; border: 1px solid #ddd; }}
-        .header {{ background: {primary}; color: {cover_text}; padding: 40px; text-align: center; }}
-        .logo {{ max-width: 150px; background: white; padding: 10px; border-radius: 10px; }}
-        .score-card {{ background: #fff; padding: 20px; border: 2px solid {primary}; border-radius: 15px; margin: -50px auto 20px; width: 200px; text-align: center; }}
-        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
-        th {{ background: {primary}; color: {cover_text}; padding: 10px; }}
-        td {{ border: 1px solid #ddd; padding: 10px; }}
-        .footer {{ text-align: center; padding: 20px; color: #888; font-size: 12px; }}
+        :root {{
+            --primary: {primary_color};
+            --secondary: {secondary_color};
+        }}
+        /* استخدمنا {{ }} للـ CSS لتفادي تداخل بايثون */
+        .report {{ background: white; max-width: 1100px; margin: auto; border-radius: 22px; box-shadow: 0 18px 45px rgba(0,0,0,0.1); }}
+        .cover {{ padding: 50px; background: {primary_color}; color: {cover_text_color}; text-align: center; }}
+        .logo {{ max-height: 80px; background: white; padding: 10px; border-radius: 12px; margin-bottom: 25px; }}
+        .score-box {{ background: #fdfaf4; padding: 25px; border-radius: 16px; text-align: center; margin: -50px auto 35px; max-width: 300px; border: 2px solid {primary_color}; }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th {{ background: {primary_color}; color: {table_text_color}; padding: 12px; }}
+        td {{ padding: 12px; border: 1px solid #ddd; }}
     </style>
     </head>
     <body>
-        <div class="report">
-            <div class="header">
-                {logo_html}
-                <h1>الخطة التسويقية لـ {store_name}</h1>
-            </div>
-            <div class="score-card">
-                <h2>{final_score}/10</h2>
-                <p>التقييم العام للمتجر</p>
-            </div>
-            <div style="padding: 40px;">
-                {report_html_body}
-            </div>
-            <div class="footer">
-                تم الإعداد بواسطة شركة أمين للحلول التسويقية والنمو الرقمي
-            </div>
+    <div class="report">
+        <div class="cover">
+            {logo_html}
+            <h1>الخطة التسويقية لمتجر {store_name}</h1>
         </div>
+        <div class="content">
+            <div class="score-box">
+                <div style="font-size: 50px; font-weight: bold; color: {primary_color};">{final_score}/10</div>
+                <div>التقييم العام للمتجر</div>
+            </div>
+            {report_html_body}
+        </div>
+    </div>
     </body>
     </html>
     """
-
-    with open("media_plan.html", "w", encoding="utf-8") as file:
-        file.write(html_template)
-    
-    return html_template, report_markdown
