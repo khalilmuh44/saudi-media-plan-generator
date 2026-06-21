@@ -1,0 +1,278 @@
+import os
+import re
+from openai import OpenAI
+import markdown
+from dotenv import load_dotenv
+from media_plan import fetch_store_page
+
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+def generate_blueprint(store_name, store_url, niche, budget, country, business_type, main_goal, current_problem):
+    store_data = fetch_store_page(store_url)
+
+    system_prompt = """
+    You are a senior Saudi growth consultant.
+    Create a Business Growth Blueprint in professional Saudi Arabic.
+    The report must be customized, practical, and business-friendly.
+
+    Include:
+    - الملخص التنفيذي
+    - CRO Audit
+    - SEO Audit
+    - Media Plan
+    - Competitor Analysis
+    - Growth Opportunities
+    - 90-Day Roadmap
+    - Quick Wins
+    - Final Recommendations
+
+    Avoid harsh criticism.
+    Use advisory tone.
+    Output in Markdown.
+    Use tables where useful.
+
+    في النهاية اكتب السطر التالي:
+    التقييم النهائي للنمو هو: [رقم من 10]
+    """
+    
+    example_user = """
+    Business Name: متجر لوازم السيارات
+    Website URL: https://example.com
+    Niche: مستلزمات سيارات
+    Business Type: E-commerce Store
+    Monthly Budget: 20000 SAR
+    Country: Saudi Arabia
+    Main Goal: Increase Sales
+    Current Problem: لدينا زيارات على المتجر ولكن معدل الطلبات ضعيف.
+    Create a complete Business Growth Blueprint.
+    """
+
+    example_assistant = """
+    # Business Growth Blueprint لمتجر لوازم السيارات
+
+    ## 1. الملخص التنفيذي
+    بعد مراجعة بيانات المتجر، يظهر أن لدى متجر لوازم السيارات فرصة جيدة للنمو داخل السوق السعودي، خصوصاً إذا تم تحسين تجربة الشراء، وضبط الرسائل الإعلانية، وربط الحملات بعروض واضحة ومقنعة.
+
+    الهدف من هذا التقرير هو تحديد أهم فرص النمو التي يمكن العمل عليها خلال أول 90 يوم، مع ترتيب الأولويات حسب الأثر المتوقع على المبيعات.
+
+    ---
+
+    ## 2. تقييم النمو الحالي من 10
+
+    | العنصر | التقييم | الملاحظة |
+    |---|---:|---|
+    | تجربة المستخدم داخل الموقع | 7/10 | التجربة جيدة، لكن تحتاج إلى إبراز العروض والثقة بشكل أوضح. |
+    | وضوح العرض التجاري | 6/10 | العميل يحتاج أن يفهم بسرعة لماذا يشتري الآن. |
+    | جاهزية الموقع للإعلانات | 7/10 | الموقع مناسب كبداية، لكن يحتاج تحسينات قبل التوسع في الإنفاق. |
+    | فرص الظهور في Google | 6/10 | توجد فرص لتحسين صفحات المنتجات والمحتوى. |
+    | فرص النمو خلال 90 يوم | 8/10 | توجد فرص واضحة لتحسين التحويل وزيادة المبيعات. |
+
+    التقييم النهائي للنمو هو: 7
+
+    ---
+
+    ## 3. CRO Audit
+    أهم فرصة حالياً هي تحسين معدل التحويل داخل المتجر. الزائر قد يصل إلى الموقع، لكنه يحتاج إلى أسباب أوضح لاتخاذ قرار الشراء.
+
+    | الملاحظة | الأثر التجاري | التوصية |
+    |---|---|---|
+    | العروض غير بارزة بشكل كافٍ | يقلل قرار الشراء السريع | إبراز عرض واضح أعلى الصفحة. |
+    | عناصر الثقة محدودة | يقلل اطمئنان العميل | إضافة تقييمات، سياسة استبدال، وضمانات. |
+    | صفحات المنتجات تحتاج تحسين | يقلل الإضافة للسلة | تحسين الصور، الوصف، والفوائد. |
+
+    ---
+
+    ## 4. SEO Audit
+    يوجد مجال لتحسين الظهور في Google من خلال تحسين عناوين الصفحات، وصف المنتجات، وإنشاء محتوى يستهدف نية البحث الشرائية.
+
+    | الفرصة | التوصية |
+    |---|---|
+    | صفحات المنتجات | تحسين العنوان والوصف والكلمات المفتاحية. |
+    | التصنيفات | كتابة وصف واضح لكل تصنيف. |
+    | المحتوى | إنشاء مقالات قصيرة عن أفضل المنتجات والاستخدامات. |
+
+    ---
+
+    ## 5. Media Plan
+    بناءً على طبيعة النشاط والسوق السعودي، الأنسب هو البدء بقنوات تساعد على الطلب المباشر وإعادة الاستهداف.
+
+    | القناة | الدور | التوصية |
+    |---|---|---|
+    | Snapchat | جذب زيارات مهتمة | مناسب للوصول السريع داخل السعودية. |
+    | Google Search | التقاط نية الشراء | مهم جداً للمنتجات التي يبحث عنها العميل مباشرة. |
+    | Instagram | بناء الثقة والظهور | مناسب للمحتوى والعروض وإعادة الاستهداف. |
+
+    ---
+
+    ## 6. Competitor Analysis
+    المنافسة في مستلزمات السيارات تعتمد غالباً على السعر، سرعة التوصيل، وضوح جودة المنتج. لذلك يجب أن يوضح المتجر سبب اختياره مقارنة بالبدائل.
+
+    | محور المقارنة | فرصة التحسين |
+    |---|---|
+    | السعر والعروض | إنشاء عروض واضحة ومحددة المدة. |
+    | الثقة | إبراز تقييمات العملاء وتجارب الاستخدام. |
+    | تجربة الشراء | تقليل الخطوات حتى إتمام الطلب. |
+
+    ---
+
+    ## 7. Growth Opportunities
+    | الفرصة | الأولوية | السبب |
+    |---|---|---|
+    | تحسين صفحة المنتج | عالية | تؤثر مباشرة على التحويل. |
+    | إطلاق حملة إعادة استهداف | عالية | تستعيد الزوار الذين لم يشتروا. |
+    | تحسين Google SEO | متوسطة | يبني مصدر زيارات مستمر. |
+    | عروض Bundles | عالية | تساعد في زيادة قيمة السلة. |
+
+    ---
+
+    ## 8. 90-Day Roadmap
+
+    | الفترة | الهدف | الإجراءات |
+    |---|---|---|
+    | أول 30 يوم | تحسين التحويل | تعديل صفحات المنتجات، إضافة عناصر الثقة، وضبط العرض. |
+    | من 31 إلى 60 يوم | تحسين الحملات | اختبار الإعلانات، بناء Retargeting، وتحليل النتائج. |
+    | من 61 إلى 90 يوم | التوسع | زيادة الميزانية على الحملات الرابحة وتحسين SEO. |
+
+    ---
+
+    ## 9. Quick Wins
+    - إضافة عرض واضح في أول الصفحة.
+    - تحسين وصف أفضل المنتجات.
+    - إضافة تقييمات العملاء.
+    - إنشاء حملة Retargeting للزوار.
+    - اختبار عرض Bundle لزيادة قيمة السلة.
+
+    ---
+
+    ## 10. التوصيات النهائية
+    نوصي بالبدء بتحسين تجربة الشراء قبل زيادة الميزانية الإعلانية. بعد تنفيذ التحسينات الأساسية، يمكن توسيع الحملات تدريجياً بناءً على النتائج الفعلية.
+
+    إذا أعجبتك هذه الرؤية، يمكن لفريق Ameen مساعدتك في تنفيذ الخطة أو عقد جلسة استراتيجية متخصصة.
+    """
+
+
+
+    user_prompt = f"""
+    Business Name: {store_name}
+    Website URL: {store_url}
+    Niche: {niche}
+    Business Type: {business_type}
+    Monthly Budget: {budget}
+    Country: {country}
+    Main Goal: {main_goal}
+    Current Problem: {current_problem}
+
+    Website Data:
+    Title: {store_data["title"]}
+    Meta Description: {store_data["meta_description"]}
+    Headings: {store_data["headings"]}
+    CTAs: {store_data["links_ctas"]}
+    Page Text: {store_data["page_text"]}
+
+    Create a complete Business Growth Blueprint.
+    """
+
+    response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": example_user},
+        {"role": "assistant", "content": example_assistant},
+        {"role": "user", "content": user_prompt},
+    ],
+    temperature=0.3,
+)
+
+    report_markdown = response.choices[0].message.content
+    report_html_body = markdown.markdown(report_markdown, extensions=["tables"])
+
+    match = re.search(r"التقييم النهائي للنمو هو:\s*(\d+)", report_markdown)
+    final_score = match.group(1) if match else "8"
+
+    html_template = f"""
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+    <meta charset="UTF-8">
+    <title>Business Growth Blueprint - {store_name}</title>
+    <style>
+    body {{
+        margin:0;
+        font-family: Tahoma, Arial, sans-serif;
+        direction:rtl;
+        background:#061A45;
+        color:white;
+    }}
+    .report {{
+        max-width:1100px;
+        margin:auto;
+        background:#061A45;
+    }}
+    .cover {{
+        padding:60px 50px;
+        background:linear-gradient(135deg,#061A45,#0B255F);
+        border-bottom:6px solid #FF6A00;
+    }}
+    h1 {{
+        font-size:38px;
+        color:white;
+    }}
+    h2 {{
+        color:#FF6A00;
+        border-right:6px solid #FF6A00;
+        padding-right:14px;
+        margin-top:40px;
+    }}
+    p,li {{
+        font-size:18px;
+        line-height:2;
+    }}
+    table {{
+        width:100%;
+        border-collapse:collapse;
+        margin:25px 0;
+    }}
+    th {{
+        background:#FF6A00;
+        color:#061A45;
+        padding:12px;
+    }}
+    td {{
+        background:rgba(255,255,255,.07);
+        border:1px solid rgba(255,255,255,.15);
+        padding:12px;
+    }}
+    .score {{
+        background:#FF6A00;
+        color:#061A45;
+        text-align:center;
+        padding:30px;
+        font-size:48px;
+        font-weight:bold;
+        margin:40px auto;
+        max-width:350px;
+        border-radius:18px;
+    }}
+    .content {{
+        padding:45px;
+    }}
+    </style>
+    </head>
+    <body>
+    <div class="report">
+        <div class="cover">
+            <h1>🚀 Business Growth Blueprint</h1>
+            <p>تقرير نمو مخصص لمشروع {store_name}</p>
+        </div>
+        <div class="content">
+            <div class="score">{final_score}/10</div>
+            {report_html_body}
+        </div>
+    </div>
+    </body>
+    </html>
+    """
+
+    return html_template, report_markdown

@@ -1,22 +1,29 @@
 import streamlit as st
 from media_plan import generate_media_plan
+from blueprint import generate_blueprint
 
-st.set_page_config(
-    page_title="Rabhan Growth",
-    layout="wide"
-)
+st.set_page_config(page_title="Ameen AI Suite", layout="wide")
 
-# تقسيم السطر إلى 3 أعمدة (جانبي فارغ، أوسط للصورة، جانبي فارغ)
-col1, col2, col3 = st.columns([1, 1.5, 1])
+st.title("🚀 Ameen AI Suite")
+st.subheader("AI Growth Reports Generator")
+
+if "service" not in st.session_state:
+    st.session_state.service = "media"
+
+col1, col2 = st.columns(2)
+
+with col1:
+    if st.button("📈 Media Plan", use_container_width=True):
+        st.session_state.service = "media"
 
 with col2:
-    
-    st.image("my_img.png", use_container_width=True)
-st.title("📈 Ameen Growth Agency")
-st.subheader("AI Media Plan Generator")
+    if st.button("🚀 Business Growth Blueprint", use_container_width=True):
+        st.session_state.service = "blueprint"
 
-store_name = st.text_input("Store Name")
-store_url = st.text_input("Store URL")
+st.divider()
+
+store_name = st.text_input("Business / Store Name")
+store_url = st.text_input("Website / Store URL")
 niche = st.text_input("Business Niche")
 budget = st.text_input("Monthly Budget", value="10000 SAR")
 
@@ -25,28 +32,58 @@ country = st.selectbox(
     ["Saudi Arabia", "UAE", "Qatar", "Kuwait"]
 )
 
-generate = st.button("Generate Media Plan")
+business_type = st.selectbox(
+    "Business Type",
+    ["E-commerce Store", "Service Business", "Restaurant", "Clinic", "Real Estate", "Other"]
+)
+
+main_goal = st.selectbox(
+    "Main Goal",
+    [
+        "Increase Sales",
+        "Improve Ads Performance",
+        "Improve Website Conversion",
+        "SEO Growth",
+        "Understand Competitors",
+        "Build 90-Day Growth Plan"
+    ]
+)
+
+current_problem = st.text_area("Current Main Problem")
+
+generate = st.button("Generate Report", use_container_width=True)
 
 if generate:
     if not store_name or not store_url or not niche or not budget:
-        st.error("Please fill all fields.")
+        st.error("Please fill all required fields.")
     else:
-        with st.spinner("Analyzing store and generating report..."):
-            html_report, markdown_report = generate_media_plan(
-                store_name=store_name,
-                store_url=store_url,
-                niche=niche,
-                budget=budget,
-                country=country
-            )
+        with st.spinner("Generating report..."):
+
+            if st.session_state.service == "media":
+                html_report, markdown_report = generate_media_plan(
+                    store_name, store_url, niche, budget, country
+                )
+                file_name = "media_plan.html"
+
+            else:
+                html_report, markdown_report = generate_blueprint(
+                    store_name,
+                    store_url,
+                    niche,
+                    budget,
+                    country,
+                    business_type,
+                    main_goal,
+                    current_problem
+                )
+                file_name = "business_growth_blueprint.html"
 
         st.success("Report generated successfully!")
-
         st.markdown(markdown_report)
 
         st.download_button(
-            label="Download HTML Report",
+            "Download HTML Presentation",
             data=html_report,
-            file_name="media_plan.html",
+            file_name=file_name,
             mime="text/html"
         )
